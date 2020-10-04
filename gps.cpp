@@ -63,12 +63,12 @@ bool gps::checkGpsFix()
       tGps.altitude.isValid() && 
       tGps.altitude.age() < 2000 )
   {
-    Serial.println("Valid gps Fix.");
+    Serial.println("Valid GPS fix.");
     return true;
   }
   else
   {
-     Serial.println("No gps Fix.");
+     Serial.println("No GPS fix.");
     // sprintf(t, "location valid: %i" , tGps.location.isValid());
     // Serial.println(t);
     // sprintf(t, "location age: %i" , tGps.location.age());
