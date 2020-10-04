@@ -10,6 +10,8 @@
 
 #include <WiFi.h>
 #include <esp_sleep.h>
+#include "axp20x.h"
+AXP20X_Class axp;
 
 // T-Beam specific hardware
 #undef BUILTIN_LED
@@ -192,6 +194,23 @@ void do_send(osjob_t* j) {
 void setup() {
   Serial.begin(115200);
   Serial.println(F("TTN Mapper"));
+  
+  /* Start power controller */
+  Wire.begin(21, 22);
+  Serial.println("Starting AXP192 power controller");
+  if (!axp.begin(Wire, AXP192_SLAVE_ADDRESS)) {
+  Serial.println("AXP192 started");
+  } else {
+  Serial.println("AXP192 failed");
+  }
+  axp.setPowerOutPut(AXP192_LDO2, AXP202_ON); // Lora on T-Beam V1.0
+  axp.setPowerOutPut(AXP192_LDO3, AXP202_ON); // Gps on T-Beam V1.0
+  axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
+  axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
+  axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON); // OLED on T-Beam v1.0
+  axp.setDCDC1Voltage(3300);
+  axp.setChgLEDMode(AXP20X_LED_BLINK_1HZ);
+  axp.adc1Enable(AXP202_BATT_CUR_ADC1, 1);
   
   //Turn off WiFi and Bluetooth
   WiFi.mode(WIFI_OFF);
